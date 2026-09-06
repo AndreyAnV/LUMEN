@@ -1,0 +1,19 @@
+{
+  "name": "lumen-dental",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site demonstrativ LUMEN Dental — HTML, Tailwind CSS și JavaScript",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "generate": "node scripts/build-site.mjs",
+    "css": "tailwindcss -i assets/css/tailwind-input.css -o assets/css/tailwind.css --minify",
+    "build": "npm run generate && npm run css",
+    "check": "node scripts/check.mjs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@tailwindcss/cli": "^4.3.3",
+    "happy-dom": "^20.14.0",
+    "tailwindcss": "^4.3.3"
+  }
+}
