@@ -17,7 +17,6 @@ const LUMEN_CONFIG = {
   media: {
     heroPosterEnabled: false, // Temporary preview: show the theme fallback until video playback begins.
     heroPoster: 'assets/images/hero/hero-poster.jpg',
-    heroVideoWebm: 'assets/images/hero/hero-video.webm',
     heroVideoMp4: 'assets/images/hero/hero-video.mp4',
     clinic: 'assets/images/clinic/reception.webp',
     treatment: 'assets/images/services/implantology.webp',

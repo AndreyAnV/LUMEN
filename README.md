@@ -79,7 +79,7 @@ Paginile HTML pot fi editate și direct. O rulare ulterioară a generatorului re
 
 ## Hero
 
-Secțiunea hero folosește `assets/images/hero/hero-video.webm`, cu MP4 ca rezervă de compatibilitate. `hero-poster.jpg` rămâne disponibil, dar este dezactivat temporar prin `heroPosterEnabled: false`. Două straturi video suprapuse creează tranziția blur/crossfade dintre reluări.
+Secțiunea hero folosește exclusiv `assets/images/hero/hero-video.mp4`, optimizat pentru redare în Safari. `hero-poster.jpg` rămâne disponibil, dar este dezactivat temporar prin `heroPosterEnabled: false`. Două straturi video suprapuse creează tranziția blur/crossfade dintre reluări.
 
 ## Comportament demonstrativ
 

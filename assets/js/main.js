@@ -86,7 +86,6 @@
 
     const addSources = target => {
       const sources = [
-        [video.dataset.srcWebm, 'video/webm'],
         [video.dataset.srcMp4, 'video/mp4']
       ].filter(([src]) => src);
       sources.forEach(([src, type]) => {
@@ -131,7 +130,7 @@
     };
     const loadVideo = async () => {
       try {
-        const candidates = [video.dataset.srcWebm, video.dataset.srcMp4].filter(Boolean);
+        const candidates = [video.dataset.srcMp4].filter(Boolean);
         let available = location.protocol === 'file:';
         if (!available) {
           for (const candidate of candidates) {

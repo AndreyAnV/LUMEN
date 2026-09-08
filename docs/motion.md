@@ -4,7 +4,7 @@ Adapted selectively from the local reference prompts in `X:\Development\learning
 
 - `scroll_reveal_blur_stagger_system.txt`: once-only scroll reveals, parent-based staggering, small blur-to-clear text entrances and restrained card scaling.
 - `seamless_angled_page_transition_guide.txt`: an approximately 30° diagonal curtain covers same-site navigation and reveals the destination after it is ready. Modified clicks, external destinations, contact protocols, new tabs and same-page anchors keep native behavior.
-- `seamless_video_loop_crossfade_system.txt`: implemented with two cached video layers using the new hero WebM, with the poster retained until playback begins.
+- `seamless_video_loop_crossfade_system.txt`: implemented with two cached layers of the optimized H.264 MP4 for Safari-compatible blur/crossfade loops.
 - `prompt for cleanup.txt`: applied to the replaced motion code. Removed the old reveal observer, three legacy reveal selectors, the old menu keyframes and the old testimonial animation rule. This was not a general cleanup or redesign of the site.
 
 ## What changed
