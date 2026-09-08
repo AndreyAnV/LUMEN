@@ -5,10 +5,10 @@
   "description": "Site demonstrativ LUMEN Dental — HTML, Tailwind CSS și JavaScript",
   "scripts": {
     "start": "node scripts/serve.mjs",
-    "generate": "node scripts/build-site.mjs",
+    "generate": "node scripts/build-site.mjs && node scripts/build-english.mjs",
     "css": "tailwindcss -i assets/css/tailwind-input.css -o assets/css/tailwind.css --minify",
     "build": "npm run generate && npm run css",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs && node scripts/check-motion.mjs"
   },
   "devDependencies": {
     "@fontsource-variable/manrope": "^5.3.0",

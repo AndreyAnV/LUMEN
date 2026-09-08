@@ -16,11 +16,44 @@ const LUMEN_CONFIG = {
   hours: [['Luni–Vineri', '08:00–20:00'], ['Sâmbătă', '09:00–14:00'], ['Duminică', 'Închis']],
   media: {
     hero: 'assets/images/hero-poster.webp',
-    clinic: 'assets/images/clinic/interior.webp',
-    treatment: 'assets/images/services/precision.webp',
-    team: 'assets/images/team/echipa.webp',
-    before: 'assets/images/results/inainte.webp',
-    after: 'assets/images/results/dupa.webp',
+    clinic: 'assets/images/clinic/reception.webp',
+    treatment: 'assets/images/services/implantology.webp',
+    team: 'assets/images/team/team-group.webp',
+    clinicGallery: [
+      'assets/images/clinic/reception.webp',
+      'assets/images/clinic/treatment-room.webp',
+      'assets/images/clinic/consultation-room.webp'
+    ],
+    services: {
+      implantologie: 'assets/images/services/implantology.webp',
+      'estetica-dentara': 'assets/images/services/dental-veneers.webp',
+      ortodontie: 'assets/images/services/orthodontics.webp',
+      endodontie: 'assets/images/services/endodontics.webp',
+      'stomatologie-generala': 'assets/images/services/professional-cleaning.webp',
+      'protetica-dentara': 'assets/images/services/dental-crowns.webp',
+      chirurgie: 'assets/images/services/oral-surgery.webp',
+      parodontologie: 'assets/images/services/periodontics.webp',
+      pedodontie: 'assets/images/services/paediatric-dentistry.webp',
+      radiologie: 'assets/images/technology/cbct.webp'
+    },
+    detailServices: {
+      'estetica-dentara': 'assets/images/services/teeth-whitening.webp'
+    },
+    technology: [
+      'assets/images/technology/cbct.webp',
+      'assets/images/technology/dental-microscope.webp',
+      'assets/images/technology/digital-scanner.webp',
+      'assets/images/technology/guided-implantology.webp'
+    ],
+    results: [
+      ['assets/images/results/case-02-before.webp', 'assets/images/results/case-02-after.webp'],
+      ['assets/images/results/case-01-before.webp', 'assets/images/results/case-01-after.webp'],
+      ['assets/images/results/case-03-before.webp', 'assets/images/results/case-03-after.webp'],
+      ['assets/images/results/inainte.webp', 'assets/images/results/dupa.webp']
+    ],
+    before: 'assets/images/results/case-01-before.webp',
+    after: 'assets/images/results/case-01-after.webp',
+    videoWebm: 'assets/video/hero-dental.webm',
     video: 'assets/video/hero-dental.mp4'
   }
 };

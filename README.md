@@ -63,6 +63,7 @@ DenTST/
 - **Conținut, navigare și subsol partajate:** `scripts/build-site.mjs`.
 - **Design și variante pentru telefon:** `assets/css/styles.css`.
 - **Interacțiuni și formulare:** `assets/js/main.js`; filtre și modal: `assets/js/results.js`.
+- **Animații:** `assets/js/motion.js`, `assets/js/page-entry.js` și `assets/css/motion.css`; detalii și limite în `docs/motion.md`.
 - **Imagini originale:** `assets/images/`. Variantele `-small.webp` sunt încărcate pe ecrane mai mici. Înlocuiește atât originalul, cât și varianta mică pentru consecvență. Portretele individuale sunt decupaje editoriale din fotografia de grup generată.
 
 După schimbări în configurație, conținut sau generator:

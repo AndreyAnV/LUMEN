@@ -13,11 +13,13 @@ const titles = new Set();
 const descriptions = new Set();
 for (const name of pages) {
   const html = await readFile(resolve(root, name), 'utf8');
+  const english = name.endsWith('-en.html');
+  check(!/\S<br>|<br>\S/.test(html), `${name}: responsive line breaks preserve word spacing`);
   const window = new Window({settings: {disableCSSFileLoading:true,disableJavaScriptFileLoading:true,enableJavaScriptEvaluation:false,disableIframePageLoading:true}});
   window.document.write(html);
   const doc = window.document;
   documents.set(name, {doc,window,html});
-  check(doc.documentElement.lang === 'ro', `${name}: Romanian language`);
+  check(doc.documentElement.lang === (english ? 'en' : 'ro'), `${name}: correct document language`);
   check(doc.querySelectorAll('h1').length === 1, `${name}: exactly one h1`);
   check(doc.querySelectorAll('main').length === 1, `${name}: one main landmark`);
   check(!titles.has(doc.title) && doc.title.length > 10, `${name}: unique title`);
@@ -26,7 +28,11 @@ for (const name of pages) {
   check(description && !descriptions.has(description), `${name}: unique meta description`);
   descriptions.add(description);
   check(doc.querySelector('meta[name=robots]')?.content === 'noindex, nofollow', `${name}: fictional business not indexed`);
-  check(doc.querySelector('meta[property="og:locale"]')?.content === 'ro_RO', `${name}: Romanian Open Graph metadata`);
+  check(doc.querySelector('meta[property="og:locale"]')?.content === (english ? 'en_GB' : 'ro_RO'), `${name}: correct Open Graph locale`);
+  const switcher = doc.querySelector('.header-actions > .language-switch');
+  check(switcher && doc.querySelector('.header-actions > .menu-toggle'), `${name}: language switch shares the header actions with the menu button`);
+  const counterpart = english ? name.replace('-en.html','.html') : name.replace('.html','-en.html');
+  check(switcher.querySelector(`a[href="${counterpart}"]`) && switcher.querySelector('[aria-current="true"]')?.textContent.trim() === (english ? 'EN' : 'RO'), `${name}: reciprocal language switch`);
   check(JSON.parse(doc.querySelector('script[type="application/ld+json"]').textContent)['@type'] === 'Dentist', `${name}: valid structured data`);
   const ids = new Set();
   for (const element of doc.querySelectorAll('[id]')) {
@@ -47,6 +53,22 @@ for (const name of pages) {
     assertions++;
   }
 }
+const homeHeadings = [...documents.get('index.html').doc.querySelectorAll('main h1, main h2')]
+  .map(heading => heading.textContent.replace(/\s+/g, ' ').trim());
+for (const expected of [
+  'Un zâmbet care se simte la fel de bine cum arată.',
+  'Tot ce îi trebuie zâmbetului tău.',
+  'Transformări care se văd. Încredere care se simte.',
+  'Oameni în care poți avea încredere.'
+]) check(homeHeadings.includes(expected), `Homepage Romanian heading: ${expected}`);
+const englishHomeHeadings = [...documents.get('index-en.html').doc.querySelectorAll('main h1, main h2')]
+  .map(heading => heading.textContent.replace(/\s+/g, ' ').trim());
+for (const expected of [
+  'A smile that feels as good as it looks.',
+  'Everything your smile needs.',
+  'Visible transformations. Confidence you can feel.',
+  'People you can trust.'
+]) check(englishHomeHeadings.includes(expected), `Homepage English heading: ${expected}`);
 for (const [name, {doc}] of documents) {
   for (const element of doc.querySelectorAll('[href], [src], [poster]')) {
     const value = element.getAttribute('href') ?? element.getAttribute('src') ?? element.getAttribute('poster');
@@ -78,7 +100,8 @@ async function interactive(name) {
   win.matchMedia = () => ({matches:true,addEventListener(){},removeEventListener(){}});
   win.scrollTo = () => {};
   win.HTMLElement.prototype.scrollIntoView = () => {};
-  for(const script of ['config.js','main.js','cases-data.js','results.js']) win.eval(await readFile(resolve(root,'assets/js',script),'utf8'));
+  const casesFile = name.endsWith('-en.html') ? 'cases-data-en.js' : 'cases-data.js';
+  for(const script of ['config.js','motion.js','main.js',casesFile,'results.js']) win.eval(await readFile(resolve(root,'assets/js',script),'utf8'));
   return win;
 }
 const home = await interactive('index.html');
@@ -162,8 +185,22 @@ check(!resultsDoc.querySelector('#case-dialog').open,'Case modal closes');
 resultsDoc.querySelector('[data-filter="all"]').click();
 check([...resultsDoc.querySelectorAll('.case-card')].every(card=>!card.hidden),'All cases filter restores portfolio');
 
+const englishHome = await interactive('index-en.html');
+const englishQuick = englishHome.document.querySelector('[data-form]');
+submit(englishQuick);
+check(englishQuick.querySelector('.field-error').textContent === 'Complete this field.', 'English form validation copy');
+englishQuick.querySelector('[name=name]').value='Demo Person';
+englishQuick.querySelector('[name=phone]').value='+40 712 345 678';
+englishQuick.querySelector('[name=service]').value='Endodontics';
+englishQuick.querySelector('[name=consent]').checked=true;
+submit(englishQuick);
+check(englishQuick.querySelector('.form-success')?.textContent.includes('no real appointment was created'), 'English form confirmation copy');
+const englishResults = await interactive('rezultate-en.html');
+englishResults.document.querySelector('[data-filter="ortodontie"]').click();
+check(englishResults.document.querySelector('#results-count').textContent === '1 demonstration case', 'English results count announcement');
+
 for (const {window} of documents.values()) await window.happyDOM.close();
-for (const window of [home,booking,results]) await window.happyDOM.close();
-const report=`# Validation\n\n${pages.length} HTML pages checked. ${assertions} assertions passed.\n\nVerified local links and anchors, assets and responsive sources, Romanian document metadata, unique page titles and descriptions, structured data, input labels, JavaScript syntax, form validation and reset, the three-step booking flow, comparison values, testimonial navigation, mobile menu states, result filters and case modal content.\n\nTests use Node and Happy DOM. They do not evaluate browser rendering, pixel layout, native keyboard focus containment, actual touch scrolling or Google Maps availability. Responsive layouts were reviewed in source for 320–1920px; actual browser/device visual testing remains a launch check.\n\nThe optional hero MP4 is deliberately absent. The WebP poster is the current hero. No form backend is connected.\n`;
+for (const window of [home,booking,results,englishHome,englishResults]) await window.happyDOM.close();
+const report=`# Validation\n\n${pages.length} HTML pages checked. ${assertions} assertions passed.\n\nVerified paired Romanian and English pages, reciprocal language switches, local links and anchors, assets and responsive sources, localized document metadata, unique page titles and descriptions, structured data, input labels, JavaScript syntax, localized form validation, form reset, the three-step booking flow, comparison values, testimonial navigation, mobile menu states, result filters and case modal content.\n\nTests use Node and Happy DOM. They do not evaluate browser rendering, pixel layout, native keyboard focus containment, actual touch scrolling or Google Maps availability. Responsive layouts were reviewed in source for 320–1920px; actual browser/device visual testing remains a launch check.\n\nThe optional hero MP4 is deliberately absent. The WebP poster is the current hero. No form backend is connected.\n`;
 await writeFile(resolve(root,'docs/validation.md'),report);
 console.log(`${pages.length} pages; ${assertions} assertions passed. See docs/validation.md.`);
