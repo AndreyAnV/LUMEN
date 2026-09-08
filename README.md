@@ -79,7 +79,7 @@ Paginile HTML pot fi editate și direct. O rulare ulterioară a generatorului re
 
 ## Hero
 
-Secțiunea hero încarcă imediat `assets/images/hero/hero-poster.jpg` sub `assets/images/hero/hero-video.mp4`, optimizat pentru Safari. Astfel, dacă iPhone-ul blochează redarea automată în modul Low Power, posterul este deja prezent fără fundal verde, animație sau controale suplimentare. Când redarea este permisă, două straturi video suprapuse creează tranziția blur/crossfade dintre reluări.
+Pe desktop, secțiunea hero folosește exclusiv imaginea fixă `assets/images/hero/hero-desktop.webp`. Pe mobil, încarcă imediat `assets/images/hero/hero-poster.jpg` sub `assets/images/hero/hero-video.mp4`, optimizat pentru Safari. Astfel, dacă iPhone-ul blochează redarea automată în modul Low Power, posterul este deja prezent fără fundal verde, animație sau controale suplimentare. Când redarea este permisă, cele două straturi video mobile creează tranziția blur/crossfade dintre reluări.
 
 ## Comportament demonstrativ
 

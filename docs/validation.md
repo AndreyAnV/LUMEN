@@ -1,6 +1,6 @@
 # Validation
 
-28 HTML pages checked. 3047 assertions passed.
+28 HTML pages checked. 3058 assertions passed.
 
 Verified paired Romanian and English pages, reciprocal language switches, local links and anchors, assets and responsive sources, localized document metadata, unique page titles and descriptions, structured data, input labels, JavaScript syntax, localized form validation, form reset, the three-step booking flow, comparison values, testimonial navigation, mobile menu states, result filters and case modal content. Homepage checks enforce the optimized Safari-compatible MP4, contrast layer and dark-green background fallback, and reject WebM references. The safety poster is temporarily disabled.
 

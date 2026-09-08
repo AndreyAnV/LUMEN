@@ -74,16 +74,20 @@ for (const name of ['index.html', 'index-en.html']) {
   const hero = doc.querySelector('.hero');
   check(hero, `${name}: hero exists`);
   const heroPoster = hero.querySelector('.hero-poster');
+  const heroDesktop = hero.querySelector('.hero-desktop-image');
   const heroVideo = hero.querySelector('#hero-video');
   const heroSource = heroVideo?.querySelector('source');
-  const posterPreload = doc.querySelector('link[rel="preload"][as="image"]');
+  const posterPreload = doc.querySelector('link[rel="preload"][as="image"][media="(max-width: 767px)"]');
+  const desktopPreload = doc.querySelector('link[rel="preload"][as="image"][media="(min-width: 768px)"]');
+  check(heroDesktop?.getAttribute('src') === 'assets/images/hero/hero-desktop.webp', `${name}: desktop hero uses the dedicated still image`);
+  check(desktopPreload?.getAttribute('href') === 'assets/images/hero/hero-desktop.webp' && desktopPreload?.getAttribute('fetchpriority') === 'high', `${name}: desktop hero image is preloaded at high priority`);
   check(heroPoster?.getAttribute('src') === 'assets/images/hero/hero-poster.jpg', `${name}: hero safety poster loads with the page`);
   check(heroPoster?.getAttribute('fetchpriority') === 'high', `${name}: hero safety poster has high loading priority`);
   check(posterPreload?.getAttribute('href') === 'assets/images/hero/hero-poster.jpg' && posterPreload?.getAttribute('fetchpriority') === 'high', `${name}: hero safety poster is preloaded at high priority`);
   check(heroVideo?.getAttribute('poster') === 'assets/images/hero/hero-poster.jpg', `${name}: video uses the same safety poster`);
   check(!heroVideo?.hasAttribute('data-src-webm'), `${name}: no longer references WebM`);
   check(!heroVideo?.hasAttribute('data-src-mp4'), `${name}: MP4 is no longer delayed behind JavaScript`);
-  check(heroSource?.getAttribute('src') === 'assets/images/hero/hero-video.mp4' && heroSource?.getAttribute('type') === 'video/mp4', `${name}: loads the optimized Safari-compatible MP4 natively`);
+  check(heroSource?.getAttribute('src') === 'assets/images/hero/hero-video.mp4' && heroSource?.getAttribute('type') === 'video/mp4' && heroSource?.getAttribute('media') === '(max-width: 767px)', `${name}: loads the optimized Safari-compatible MP4 only on mobile`);
   check(hero.querySelector('.hero-media') && hero.querySelector('.hero-shade'), `${name}: hero media and contrast layers exist`);
 }
 for (const [name, {doc}] of documents) {
@@ -103,9 +107,11 @@ for (const [name, {doc}] of documents) {
   }
 }
 const css = await readFile(resolve(root,'assets/css/styles.css'),'utf8');
+const motionCss = await readFile(resolve(root,'assets/css/motion.css'),'utf8');
 const mainJs = await readFile(resolve(root,'assets/js/main.js'),'utf8');
 check(/\.hero\{[^}]*background:#252d26[^}]*isolation/s.test(css), 'Hero keeps the site-theme dark-green fallback behind its media');
 check(css.includes('.hero-media,.hero-shade{position:absolute;inset:0;z-index:-1;overflow:hidden}'), 'Hero media layers cover the hero');
+check(motionCss.includes('@media (min-width: 768px)') && motionCss.includes('.hero-media .hero-desktop-image { display: none; }'), 'Desktop and mobile hero media are separated by viewport');
 check(mainJs.includes('showHeroPoster'), 'Blocked hero autoplay keeps the safety poster visible');
 check(!mainJs.includes('hero-play-control'), 'Blocked hero autoplay adds no playback button');
 for (const [,path] of css.matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)) {

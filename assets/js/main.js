@@ -77,8 +77,9 @@
   const videoSource = video?.querySelector('source')?.getAttribute('src');
   const heroMedia = video?.closest('.hero-media');
   const connection = navigator.connection;
+  const mobileHero = matchMedia('(max-width: 767px)');
   const showHeroPoster = () => heroMedia?.classList.remove('video-ready');
-  if (video && videoSource && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
+  if (video && videoSource && mobileHero.matches && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
     let activeVideo = video;
     let standbyVideo;
     let switching = false;
@@ -91,6 +92,7 @@
       const source = document.createElement('source');
       source.src = videoSource;
       source.type = 'video/mp4';
+      source.media = '(max-width: 767px)';
       target.append(source);
       target.muted = true;
       target.load();

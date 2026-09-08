@@ -21,9 +21,11 @@ const esc = x => String(x).replaceAll('&','&amp;').replaceAll('<','&lt;').replac
 const photo = (path,alt,cls='',eager=false) => {
   const portrait = /team\/[^/]+\.webp$/.test(path);
   const heroPoster = cls.split(/\s+/).includes('hero-poster');
+  const heroDesktop = cls.split(/\s+/).includes('hero-desktop-image');
   const dimensions = portrait ? [384,480] : heroPoster ? [1013,1520] : path.includes('/clinic/') || path.includes('/technology/') ? [1800,1200] : path.includes('/services/') || path.includes('/results/') ? [1600,1200] : [1536,864];
-  const responsive = portrait || heroPoster ? '' : ` srcset="${path.replace('.webp','-small.webp')} 840w, ${path} ${dimensions[0]}w" sizes="${eager?'100vw':'(max-width: 767px) 100vw, (max-width: 1200px) 60vw, 900px'}"`;
+  const responsive = portrait || heroPoster || heroDesktop ? '' : ` srcset="${path.replace('.webp','-small.webp')} 840w, ${path} ${dimensions[0]}w" sizes="${eager?'100vw':'(max-width: 767px) 100vw, (max-width: 1200px) 60vw, 900px'}"`;
   const image = `<img src="${path}"${responsive} alt="${esc(alt)}" class="block ${cls}" width="${dimensions[0]}" height="${dimensions[1]}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async">`;
+  if (heroPoster && c.media.heroDesktop) return `${photo(c.media.heroDesktop,'','hero-desktop-image',true)}${image}`;
   return image;
 };
 const imageFor = s => c.media.services[s.slug];
@@ -77,6 +79,8 @@ for(const [filename,title,description,render] of pages){
   const html=`<!doctype html>\n<html lang="ro"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>${title}</title><meta name="description" content="${esc(description)}"><meta name="theme-color" content="#151817">${c.demo?'<meta name="robots" content="noindex, nofollow">':''}${canonical?`<link rel="canonical" href="${esc(canonical)}">`:''}<meta property="og:type" content="website"><meta property="og:locale" content="ro_RO"><meta property="og:site_name" content="${c.name}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:image" content="${c.siteUrl?new URL(c.media.heroPoster,c.siteUrl).href:c.media.heroPoster}">${canonical?`<meta property="og:url" content="${esc(canonical)}">`:''}<link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml"><link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>${filename==='index.html'?`<link rel="preload" href="${c.media.heroPoster}" as="image" fetchpriority="high">`:''}<link rel="stylesheet" href="assets/css/tailwind.css"><link rel="stylesheet" href="assets/css/styles.css"><script type="application/ld+json">${JSON.stringify(structured)}</script><script src="assets/js/config.js" defer></script><script src="assets/js/main.js" defer></script><script src="assets/js/results.js" defer></script></head><body class="${filename==='index.html'?'home':'inner-page'}" data-page="${filename}"><div class="page-transition" aria-hidden="true"><span>LUMEN</span></div>${header(filename)}<main id="continut">${render()}</main>${footer(filename)}<noscript><div class="noscript-notice">JavaScript est désactivé.</div></noscript></body></html>`;
   const normalizedHtml = html
     .replace(/\s*<br>\s*/g, ' <br> ')
+    .replace(`<link rel="preload" href="${c.media.heroPoster}" as="image" fetchpriority="high">`, `<link rel="preload" href="${c.media.heroDesktop}" as="image" media="(min-width: 768px)" fetchpriority="high"><link rel="preload" href="${c.media.heroPoster}" as="image" media="(max-width: 767px)" fetchpriority="high">`)
+    .replace(`<source src="${c.media.heroVideoMp4}" type="video/mp4">`, `<source src="${c.media.heroVideoMp4}" type="video/mp4" media="(max-width: 767px)">`)
     .replace('JavaScript est désactivé.','JavaScript este dezactivat. Navigarea și informațiile sunt disponibile. Activează JavaScript pentru formulare și comparații interactive.')
     .replaceAll('LUMEN Dental',esc(c.name))
     .replaceAll('LUMEN',esc(c.wordmark));

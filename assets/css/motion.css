@@ -123,6 +123,7 @@ html.motion-boot .page-hero {
 .motion-pending:focus-within { opacity: 1; }
 
 /* Two cached video layers overlap at the loop boundary for a soft, continuous reset. */
+.hero-media .hero-desktop-image { opacity: 1; }
 .hero-media .hero-poster {
   opacity: 1;
   transition: opacity 700ms ease;
@@ -145,6 +146,15 @@ html.motion-boot .page-hero {
   opacity: 0;
   filter: blur(8px);
   transform: scale(1.025);
+}
+
+@media (min-width: 768px) {
+  .hero-media .hero-poster,
+  .hero-media video { display: none; }
+}
+
+@media (max-width: 767px) {
+  .hero-media .hero-desktop-image { display: none; }
 }
 
 body.home .section-heading + .service-bento { padding-top: 32px; }
