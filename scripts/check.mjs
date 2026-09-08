@@ -100,11 +100,13 @@ for (const [name, {doc}] of documents) {
   }
 }
 const css = await readFile(resolve(root,'assets/css/styles.css'),'utf8');
+const motionCss = await readFile(resolve(root,'assets/css/motion.css'),'utf8');
 const mainJs = await readFile(resolve(root,'assets/js/main.js'),'utf8');
 check(/\.hero\{[^}]*background:#252d26[^}]*isolation/s.test(css), 'Hero keeps the site-theme dark-green fallback behind its media');
 check(css.includes('.hero-media,.hero-shade{position:absolute;inset:0;z-index:-1;overflow:hidden}'), 'Hero media layers cover the hero');
 check(mainJs.includes('showHeroPoster') && mainJs.includes("heroMedia.prepend(poster)"), 'Blocked hero autoplay loads the safety poster dynamically');
 check(!mainJs.includes('hero-play-control'), 'Blocked hero autoplay adds no playback button');
+check(motionCss.includes('.hero-media:not(.video-ready) .hero-poster.hero-poster-fallback.is-visible'), 'Fallback hero poster fades in after loading');
 for (const [,path] of css.matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)) {
   check((await stat(resolve(root,'assets/css',path))).isFile(), `CSS asset exists: ${path}`);
 }

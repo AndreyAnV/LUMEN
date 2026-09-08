@@ -84,12 +84,13 @@
     const posterPath = window.LUMEN_CONFIG?.media?.heroPoster;
     if (!posterPath) return;
     const poster = document.createElement('img');
-    poster.src = posterPath;
     poster.alt = '';
-    poster.className = 'block hero-poster';
+    poster.className = 'block hero-poster hero-poster-fallback';
     poster.width = 1013;
     poster.height = 1520;
     poster.decoding = 'async';
+    poster.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(() => poster.classList.add('is-visible'))), {once: true});
+    poster.src = posterPath;
     heroMedia.prepend(poster);
   };
   if (video && videoSource && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
