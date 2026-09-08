@@ -15,11 +15,12 @@ const LUMEN_CONFIG = {
   demo: true,
   hours: [['Luni–Vineri', '08:00–20:00'], ['Sâmbătă', '09:00–14:00'], ['Duminică', 'Închis']],
   media: {
-    hero: 'assets/images/hero-poster.webp',
-    heroMobile: 'assets/images/hero-mobile-poster.jpg',
+    heroPosterEnabled: false, // Temporary preview: show the theme fallback until video playback begins.
+    heroPoster: 'assets/images/hero/hero-poster.jpg',
+    heroVideoWebm: 'assets/images/hero/hero-video.webm',
+    heroVideoMp4: 'assets/images/hero/hero-video.mp4',
     clinic: 'assets/images/clinic/reception.webp',
     treatment: 'assets/images/services/implantology.webp',
-    team: 'assets/images/team/team-group.webp',
     clinicGallery: [
       'assets/images/clinic/reception.webp',
       'assets/images/clinic/treatment-room.webp',
@@ -49,15 +50,8 @@ const LUMEN_CONFIG = {
     results: [
       ['assets/images/results/case-02-before.webp', 'assets/images/results/case-02-after.webp'],
       ['assets/images/results/case-01-before.webp', 'assets/images/results/case-01-after.webp'],
-      ['assets/images/results/case-03-before.webp', 'assets/images/results/case-03-after.webp'],
-      ['assets/images/results/inainte.webp', 'assets/images/results/dupa.webp']
-    ],
-    before: 'assets/images/results/case-01-before.webp',
-    after: 'assets/images/results/case-01-after.webp',
-    videoWebm: 'assets/video/hero-dental.webm',
-    video: 'assets/video/hero-dental.mp4',
-    videoMobileWebm: 'assets/video/hero-mobile.webm',
-    videoMobile: 'assets/video/hero-mobile.mp4'
+      ['assets/images/results/case-03-before.webp', 'assets/images/results/case-03-after.webp']
+    ]
   }
 };
 if (typeof window !== 'undefined') window.LUMEN_CONFIG = LUMEN_CONFIG;

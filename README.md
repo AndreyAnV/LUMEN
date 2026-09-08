@@ -36,12 +36,11 @@ DenTST/
 │   ├── css/         styles.css, tailwind.css, tailwind-input.css
 │   ├── js/          config.js, main.js, results.js, cases-data.js
 │   ├── fonts/       Manrope local, inclusiv diacritice românești și licență OFL
-│   ├── images/      hero-poster.webp, favicon.svg
+│   ├── images/      favicon.svg și hero/
 │   │   ├── clinic/
 │   │   ├── services/
 │   │   ├── team/
 │   │   └── results/
-│   └── video/       hero-poster.webp, README.md
 ├── scripts/
 │   ├── content.mjs         servicii, echipă, tarife, cazuri
 │   ├── build-site.mjs      generează paginile statice
@@ -78,16 +77,14 @@ Dependențele sunt instrumente de dezvoltare. Site-ul livrat folosește fișiere
 
 Paginile HTML pot fi editate și direct. O rulare ulterioară a generatorului rescrie acele pagini, așadar păstrează modificările permanente în sursele partajate.
 
-## Hero și video
+## Hero
 
-Posterul principal este `assets/images/hero-poster.webp`. Este inclusă și varianta `hero-poster-small.webp`, precum și copia solicitată în `assets/video/`.
-
-Fișierul **`assets/video/hero-dental.mp4` este intenționat absent**. Site-ul arată posterul complet stilizat. Pentru a activa video, adaugă un MP4 H.264 optimizat la acea cale și deschide site-ul prin `npm start`; nu trebuie schimbat layoutul. Scriptul verifică existența fișierului înainte de redare. La deschiderea directă prin `file://`, cu preferința de mișcare redusă, Save-Data sau conexiuni 2G, rămâne posterul.
+Secțiunea hero folosește `assets/images/hero/hero-video.webm`, cu MP4 ca rezervă de compatibilitate. `hero-poster.jpg` rămâne disponibil, dar este dezactivat temporar prin `heroPosterEnabled: false`. Două straturi video suprapuse creează tranziția blur/crossfade dintre reluări.
 
 ## Comportament demonstrativ
 
 - Formularele validează numele, telefonul, emailul opțional, serviciul, data și acordul. **Nu trimit, nu salvează și nu rezervă nimic.** Confirmarea explică acest lucru.
-- Echipa, mărturiile, prețurile, experiența și cronologia sunt fictive. Fotografiile au fost create cu instrumentul integrat imagegen. Prompturile complete sunt în `docs/image-prompts.md`.
+- Echipa, mărturiile, prețurile, experiența și cronologia sunt fictive. Fotografiile demonstrative au fost create pentru acest concept.
 - Comparațiile sunt simulări. Aceeași pereche de imagini ilustrează cele patru scenarii de portofoliu, fapt menționat pe pagina de rezultate.
 - Harta indică **Castelul Corvinilor**, ca reper de concept. Nu susține existența unei clinici la adresă. Încorporarea Google Maps și linkul de direcții nu necesită o cheie API.
 - Butoanele sociale explică faptul că nu există conturi reale. Telefonul, emailul și WhatsApp folosesc datele fictive din brief; se înlocuiesc înainte de utilizare reală.

@@ -123,12 +123,17 @@ html.motion-boot .page-hero {
 .motion-pending:focus-within { opacity: 1; }
 
 /* Two cached video layers overlap at the loop boundary for a soft, continuous reset. */
+.hero-media .hero-poster {
+  opacity: 1;
+  transition: opacity 700ms ease;
+}
+.hero-media.video-ready .hero-poster { opacity: 0; }
 .hero-media video,
 .hero-media video.playing {
   opacity: 0;
   filter: blur(8px);
   transform: scale(1.018);
-  transition: opacity 900ms ease, filter 900ms var(--ease-soft), transform 1100ms var(--ease-soft);
+  transition: opacity 1000ms ease, filter 1000ms var(--ease-soft), transform 1100ms var(--ease-soft);
   will-change: opacity, filter, transform;
 }
 .hero-media video.is-active {
@@ -205,13 +210,12 @@ body.home .section-heading + .service-bento { padding-top: 32px; }
 }
 
 @media (max-width: 767px) {
-  .hero-media video { object-position: 68% center; }
   body.home .section-heading + .service-bento { padding-top: 24px; }
   .mobile-bar {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transition: transform 380ms var(--ease-soft), opacity 260ms ease, visibility 0s linear 0s;
+    transition: transform 700ms var(--ease-soft), opacity 460ms ease-out, visibility 0s linear 0s;
     will-change: transform, opacity;
   }
   .mobile-bar.is-hidden {
@@ -219,7 +223,7 @@ body.home .section-heading + .service-bento { padding-top: 32px; }
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: transform 380ms var(--ease-soft), opacity 240ms ease, visibility 0s linear 380ms;
+    transition: transform 700ms var(--ease-soft), opacity 420ms ease-in, visibility 0s linear 700ms;
   }
   .service-card:active,
   .technology-card:active,

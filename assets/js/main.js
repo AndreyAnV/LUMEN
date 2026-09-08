@@ -74,9 +74,6 @@
   }));
 
   const video = $('#hero-video');
-  const heroMedia = window.LUMEN_CONFIG?.media || {};
-  const mobileHero = matchMedia('(max-width: 767px)').matches;
-  if (video && mobileHero && heroMedia.heroMobile) video.poster = heroMedia.heroMobile;
   const connection = navigator.connection;
   if (video && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
     let activeVideo = video;
@@ -84,18 +81,22 @@
     let switching = false;
     let loopFrame = 0;
     let settleTimer = 0;
-    const crossfadeDuration = 900;
-    const crossfadeLead = 1.15;
+    const crossfadeDuration = 1000;
+    const crossfadeLead = 1.25;
 
-    const addSources = (target, sources) => {
+    const addSources = target => {
+      const sources = [
+        [video.dataset.srcWebm, 'video/webm'],
+        [video.dataset.srcMp4, 'video/mp4']
+      ].filter(([src]) => src);
       sources.forEach(([src, type]) => {
         const source = document.createElement('source');
         source.src = src;
         source.type = type;
         target.append(source);
       });
-      target.load();
       target.muted = true;
+      target.load();
     };
     const settleCrossfade = () => {
       if (!switching) return;
@@ -129,38 +130,35 @@
       loopFrame = requestAnimationFrame(watchLoop);
     };
     const loadVideo = async () => {
-      // Verify the preferred WebM before adding sources; MP4 remains the fallback.
       try {
-        const candidates = (mobileHero
-          ? [heroMedia.videoMobileWebm, heroMedia.videoMobile]
-          : [video.dataset.srcWebm, video.dataset.srcMp4]
-        ).filter(Boolean);
-        let preferred = location.protocol === 'file:' ? candidates[0] : '';
-        if (location.protocol !== 'file:') {
+        const candidates = [video.dataset.srcWebm, video.dataset.srcMp4].filter(Boolean);
+        let available = location.protocol === 'file:';
+        if (!available) {
           for (const candidate of candidates) {
             const response = await fetch(candidate, {method: 'HEAD'});
-            if (response.ok && response.headers.get('content-type')?.includes('video')) { preferred = candidate; break; }
+            if (response.ok && response.headers.get('content-type')?.includes('video')) { available = true; break; }
           }
         }
-        if (!preferred) return;
-        if (motion?.reduced) return;
-        const sources = candidates.map(src => [src, src.endsWith('.webm') ? 'video/webm' : 'video/mp4']);
+        if (!available || motion?.reduced) return;
         standbyVideo = video.cloneNode(false);
         standbyVideo.removeAttribute('id');
         standbyVideo.removeAttribute('poster');
         standbyVideo.removeAttribute('autoplay');
         standbyVideo.className = 'hero-video-clone';
         video.after(standbyVideo);
-        addSources(video, sources);
-        addSources(standbyVideo, sources);
+        addSources(video);
+        addSources(standbyVideo);
         [video, standbyVideo].forEach(item => item.addEventListener('error', () => item.classList.remove('playing', 'is-active', 'is-fading')));
         await video.play();
         video.classList.add('playing', 'is-active');
+        video.closest('.hero-media')?.classList.add('video-ready');
         loopFrame = requestAnimationFrame(watchLoop);
-      } catch { video.classList.remove('playing', 'is-active', 'is-fading'); }
+      } catch {
+        video.classList.remove('playing', 'is-active', 'is-fading');
+      }
     };
-    if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, {timeout: 2500});
-    else setTimeout(loadVideo, 1500);
+    if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, {timeout: 1200});
+    else setTimeout(loadVideo, 400);
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         activeVideo.pause();
@@ -171,14 +169,14 @@
       }
     });
     matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', event => {
-      if (event.matches) {
-        cancelAnimationFrame(loopFrame);
-        clearTimeout(settleTimer);
-        video.pause();
-        standbyVideo?.pause();
-        video.classList.remove('playing', 'is-active', 'is-fading');
-        standbyVideo?.classList.remove('playing', 'is-active', 'is-fading');
-      }
+      if (!event.matches) return;
+      cancelAnimationFrame(loopFrame);
+      clearTimeout(settleTimer);
+      video.pause();
+      standbyVideo?.pause();
+      video.classList.remove('playing', 'is-active', 'is-fading');
+      standbyVideo?.classList.remove('playing', 'is-active', 'is-fading');
+      video.closest('.hero-media')?.classList.remove('video-ready');
     });
   }
   // If an owner removes an asset, retain the designed background instead of a broken icon.

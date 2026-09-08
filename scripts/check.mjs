@@ -69,6 +69,18 @@ for (const expected of [
   'Visible transformations. Confidence you can feel.',
   'People you can trust.'
 ]) check(englishHomeHeadings.includes(expected), `Homepage English heading: ${expected}`);
+for (const name of ['index.html', 'index-en.html']) {
+  const {doc} = documents.get(name);
+  const hero = doc.querySelector('.hero');
+  check(hero, `${name}: hero exists`);
+  const heroPoster = hero.querySelector('.hero-poster');
+  const heroVideo = hero.querySelector('#hero-video');
+  check(!heroPoster, `${name}: hero safety poster is temporarily disabled`);
+  check(!heroVideo?.hasAttribute('poster'), `${name}: video poster attribute is temporarily disabled`);
+  check(heroVideo?.dataset.srcWebm === 'assets/images/hero/hero-video.webm', `${name}: uses the high-quality hero WebM`);
+  check(heroVideo?.dataset.srcMp4 === 'assets/images/hero/hero-video.mp4', `${name}: keeps the source MP4 as compatibility fallback`);
+  check(hero.querySelector('.hero-media') && hero.querySelector('.hero-shade'), `${name}: hero media and contrast layers exist`);
+}
 for (const [name, {doc}] of documents) {
   for (const element of doc.querySelectorAll('[href], [src], [poster]')) {
     const value = element.getAttribute('href') ?? element.getAttribute('src') ?? element.getAttribute('poster');
@@ -86,6 +98,8 @@ for (const [name, {doc}] of documents) {
   }
 }
 const css = await readFile(resolve(root,'assets/css/styles.css'),'utf8');
+check(/\.hero\{[^}]*background:#252d26[^}]*isolation/s.test(css), 'Hero keeps the site-theme dark-green fallback behind its media');
+check(css.includes('.hero-media,.hero-shade{position:absolute;inset:0;z-index:-1;overflow:hidden}'), 'Hero media layers cover the hero');
 for (const [,path] of css.matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)) {
   check((await stat(resolve(root,'assets/css',path))).isFile(), `CSS asset exists: ${path}`);
 }
@@ -201,6 +215,6 @@ check(englishResults.document.querySelector('#results-count').textContent === '1
 
 for (const {window} of documents.values()) await window.happyDOM.close();
 for (const window of [home,booking,results,englishHome,englishResults]) await window.happyDOM.close();
-const report=`# Validation\n\n${pages.length} HTML pages checked. ${assertions} assertions passed.\n\nVerified paired Romanian and English pages, reciprocal language switches, local links and anchors, assets and responsive sources, localized document metadata, unique page titles and descriptions, structured data, input labels, JavaScript syntax, localized form validation, form reset, the three-step booking flow, comparison values, testimonial navigation, mobile menu states, result filters and case modal content.\n\nTests use Node and Happy DOM. They do not evaluate browser rendering, pixel layout, native keyboard focus containment, actual touch scrolling or Google Maps availability. Responsive layouts were reviewed in source for 320–1920px; actual browser/device visual testing remains a launch check.\n\nThe optional hero MP4 is deliberately absent. The WebP poster is the current hero. No form backend is connected.\n`;
+const report=`# Validation\n\n${pages.length} HTML pages checked. ${assertions} assertions passed.\n\nVerified paired Romanian and English pages, reciprocal language switches, local links and anchors, assets and responsive sources, localized document metadata, unique page titles and descriptions, structured data, input labels, JavaScript syntax, localized form validation, form reset, the three-step booking flow, comparison values, testimonial navigation, mobile menu states, result filters and case modal content. Homepage checks enforce the high-quality WebM, MP4 compatibility fallback, contrast layer and dark-green background fallback. The safety poster is temporarily disabled.\n\nTests use Node and Happy DOM. They do not evaluate browser rendering, pixel layout, native keyboard focus containment, actual touch scrolling or Google Maps availability. Responsive layouts were reviewed in source for 320–1920px; actual browser/device visual testing remains a launch check.\n\nThe hero video uses two synchronized layers for a blurred crossfade at each loop boundary. No form backend is connected.\n`;
 await writeFile(resolve(root,'docs/validation.md'),report);
 console.log(`${pages.length} pages; ${assertions} assertions passed. See docs/validation.md.`);
