@@ -77,22 +77,7 @@
   const videoSource = video?.querySelector('source')?.getAttribute('src');
   const heroMedia = video?.closest('.hero-media');
   const connection = navigator.connection;
-  const showHeroPoster = () => {
-    if (!heroMedia) return;
-    heroMedia.classList.remove('video-ready');
-    if (heroMedia.querySelector('.hero-poster')) return;
-    const posterPath = window.LUMEN_CONFIG?.media?.heroPoster;
-    if (!posterPath) return;
-    const poster = document.createElement('img');
-    poster.alt = '';
-    poster.className = 'block hero-poster hero-poster-fallback';
-    poster.width = 1013;
-    poster.height = 1520;
-    poster.decoding = 'async';
-    poster.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(() => poster.classList.add('is-visible'))), {once: true});
-    poster.src = posterPath;
-    heroMedia.prepend(poster);
-  };
+  const showHeroPoster = () => heroMedia?.classList.remove('video-ready');
   if (video && videoSource && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
     let activeVideo = video;
     let standbyVideo;

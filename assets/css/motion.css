@@ -127,8 +127,6 @@ html.motion-boot .page-hero {
   opacity: 1;
   transition: opacity 700ms ease;
 }
-.hero-media .hero-poster.hero-poster-fallback { opacity: 0; transition-duration: 1000ms; }
-.hero-media:not(.video-ready) .hero-poster.hero-poster-fallback.is-visible { opacity: 1; }
 .hero-media.video-ready .hero-poster { opacity: 0; }
 .hero-media video,
 .hero-media video.playing {
@@ -250,7 +248,6 @@ body.home .section-heading + .service-bento { padding-top: 32px; }
 @media (prefers-reduced-motion: reduce) {
   .page-transition { display: none; }
   .motion-pending, html.motion-boot .hero-copy, html.motion-boot .page-hero { opacity: 1; }
-  .hero-media .hero-poster.hero-poster-fallback { transition: none; }
   .button:active, .icon-button:active, .filter-button:active { transform: none; }
 }
 
