@@ -74,6 +74,9 @@
   }));
 
   const video = $('#hero-video');
+  const heroMedia = window.LUMEN_CONFIG?.media || {};
+  const mobileHero = matchMedia('(max-width: 767px)').matches;
+  if (video && mobileHero && heroMedia.heroMobile) video.poster = heroMedia.heroMobile;
   const connection = navigator.connection;
   if (video && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
     let activeVideo = video;
@@ -127,21 +130,21 @@
     };
     const loadVideo = async () => {
       // Verify the preferred WebM before adding sources; MP4 remains the fallback.
-      // file:// cannot fetch a HEAD response, so it uses the static poster.
-      if (location.protocol === 'file:') return;
       try {
-        const candidates = [video.dataset.srcWebm, video.dataset.srcMp4].filter(Boolean);
-        let preferred = '';
-        for (const candidate of candidates) {
-          const response = await fetch(candidate, {method: 'HEAD'});
-          if (response.ok && response.headers.get('content-type')?.includes('video')) { preferred = candidate; break; }
+        const candidates = (mobileHero
+          ? [heroMedia.videoMobileWebm, heroMedia.videoMobile]
+          : [video.dataset.srcWebm, video.dataset.srcMp4]
+        ).filter(Boolean);
+        let preferred = location.protocol === 'file:' ? candidates[0] : '';
+        if (location.protocol !== 'file:') {
+          for (const candidate of candidates) {
+            const response = await fetch(candidate, {method: 'HEAD'});
+            if (response.ok && response.headers.get('content-type')?.includes('video')) { preferred = candidate; break; }
+          }
         }
         if (!preferred) return;
         if (motion?.reduced) return;
-        const sources = [
-          [video.dataset.srcWebm, 'video/webm'],
-          [video.dataset.srcMp4, 'video/mp4']
-        ].filter(([src]) => src && (src === preferred || candidates.includes(src)));
+        const sources = candidates.map(src => [src, src.endsWith('.webm') ? 'video/webm' : 'video/mp4']);
         standbyVideo = video.cloneNode(false);
         standbyVideo.removeAttribute('id');
         standbyVideo.removeAttribute('poster');

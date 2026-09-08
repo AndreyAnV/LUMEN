@@ -22,14 +22,18 @@ const photo = (path,alt,cls='',eager=false) => {
   const portrait = /team\/(?!echipa|team-group)[^/]+\.webp$/.test(path);
   const dimensions = portrait ? [384,480] : path.includes('/clinic/') || path.includes('/technology/') || path.includes('/team/team-group') ? [1800,1200] : path.includes('/services/') || path.includes('/results/') ? [1600,1200] : [1536,864];
   const responsive = portrait ? '' : ` srcset="${path.replace('.webp','-small.webp')} 840w, ${path} ${dimensions[0]}w" sizes="${eager?'100vw':'(max-width: 767px) 100vw, (max-width: 1200px) 60vw, 900px'}"`;
-  return `<img src="${path}"${responsive} alt="${esc(alt)}" class="block ${cls}" width="${dimensions[0]}" height="${dimensions[1]}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async">`;
+  const image = `<img src="${path}"${responsive} alt="${esc(alt)}" class="block ${cls}" width="${dimensions[0]}" height="${dimensions[1]}" ${eager?'fetchpriority="high"':'loading="lazy"'} decoding="async">`;
+  return cls.split(/\s+/).includes('hero-poster') && c.media.heroMobile
+    ? `<picture><source media="(max-width: 767px)" srcset="${c.media.heroMobile}">${image}</picture>`
+    : image;
 };
 const imageFor = s => c.media.services?.[s.slug] || (s.image==='smile'?c.media.after:s.image==='clinic'?c.media.clinic:c.media.treatment);
 const linkFor = s => s.hero?`${s.slug}.html`:`servicii.html#${s.slug}`;
 const button = (text,href,kind='primary') => `<a class="button ${kind}" href="${href}">${text}${arrow}</a>`;
 const eyebrow = text => `<p class="eyebrow">${text}</p>`;
 const nav = [['index.html','Acasă'],['servicii.html','Servicii'],['echipa.html','Echipă'],['rezultate.html','Rezultate'],['tarife.html','Tarife'],['despre-noi.html','Despre noi'],['contact.html','Contact']];
-const brand = `<a class="brand" href="index.html" aria-label="${esc(c.name)} — Acasă"><span class="brand-symbol" aria-hidden="true">✳</span><span>${esc(c.wordmark)}<span class="brand-sub">${esc(c.descriptor)}</span></span></a>`;
+const brandSymbol = '<svg class="brand-symbol" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false"><g stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M32 10v44M10 32h44M16.5 16.5l31 31M16.5 47.5l31-31"/></g><circle cx="32" cy="32" r="7" fill="currentColor"/></svg>';
+const brand = `<a class="brand" href="index.html" aria-label="${esc(c.name)} — Acasă">${brandSymbol}<span>${esc(c.wordmark)}<span class="brand-sub">${esc(c.descriptor)}</span></span></a>`;
 const englishFile = filename => filename.replace(/\.html$/, '-en.html');
 const languageSwitch = page => `<nav class="language-switch" aria-label="Limbă"><span aria-current="true">RO</span><a href="${englishFile(page)}" lang="en" hreflang="en" aria-label="Switch to English">EN</a></nav>`;
 const contactActions = () => `<a href="tel:${c.phoneLink}">${icon('phone')}<span>Sună</span></a><a href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener">${icon('chat')}<span>WhatsApp</span></a><a class="book" href="programare.html">${icon('calendar')}<span>Programează-te</span></a>`;

@@ -1,13 +1,13 @@
 window.LUMEN_CASES = [
   {
     "id": "01",
-    "title": "Luminozitate, păstrând naturalețea",
+    "title": "Reconstrucția unui dinte frontal",
     "category": "estetica",
-    "tags": "Estetică dentară · Albire dentară",
-    "duration": "2 săptămâni",
-    "problem": "Scenariu ilustrativ: colorație dentară generalizată și dorința unei nuanțe mai luminoase.",
-    "approach": "Consultație, evaluarea sănătății orale și albire dentară profesională supravegheată.",
-    "result": "Obiectivul scenariului: uniformizarea nuanței, păstrând aspectul natural al dinților."
+    "tags": "Estetică dentară · Reconstrucție directă",
+    "duration": "1 ședință",
+    "problem": "Scenariu ilustrativ: pierdere de substanță la nivelul unui dinte frontal, vizibilă în partea stângă a imaginii.",
+    "approach": "Reconstrucție directă cu material compozit, modelată pentru a reface forma, marginea și integrarea naturală a dintelui.",
+    "result": "Obiectivul scenariului: refacerea localizată a dintelui afectat, păstrând caracteristicile naturale ale zâmbetului."
   },
   {
     "id": "02",

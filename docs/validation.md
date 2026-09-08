@@ -1,6 +1,6 @@
 # Validation
 
-28 HTML pages checked. 3023 assertions passed.
+28 HTML pages checked. 3025 assertions passed.
 
 Verified paired Romanian and English pages, reciprocal language switches, local links and anchors, assets and responsive sources, localized document metadata, unique page titles and descriptions, structured data, input labels, JavaScript syntax, localized form validation, form reset, the three-step booking flow, comparison values, testimonial navigation, mobile menu states, result filters and case modal content.
 

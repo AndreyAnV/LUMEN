@@ -31,3 +31,5 @@
 @media(max-width:1023px){.team-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:767px){.team-grid{grid-template-columns:1fr}.portrait,.assistant-profile .portrait{aspect-ratio:1.06}.assistant-profile .portrait img{object-position:center 25%}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+.brand-symbol{width:43px;height:43px;display:block;flex-shrink:0}
+@media(max-width:767px){.brand-symbol{width:36px;height:36px}}
