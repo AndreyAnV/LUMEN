@@ -74,8 +74,9 @@
   }));
 
   const video = $('#hero-video');
+  const videoSource = video?.querySelector('source')?.getAttribute('src');
   const connection = navigator.connection;
-  if (video && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
+  if (video && videoSource && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
     let activeVideo = video;
     let standbyVideo;
     let switching = false;
@@ -84,16 +85,11 @@
     const crossfadeDuration = 1000;
     const crossfadeLead = 1.25;
 
-    const addSources = target => {
-      const sources = [
-        [video.dataset.srcMp4, 'video/mp4']
-      ].filter(([src]) => src);
-      sources.forEach(([src, type]) => {
-        const source = document.createElement('source');
-        source.src = src;
-        source.type = type;
-        target.append(source);
-      });
+    const addSource = target => {
+      const source = document.createElement('source');
+      source.src = videoSource;
+      source.type = 'video/mp4';
+      target.append(source);
       target.muted = true;
       target.load();
     };
@@ -130,13 +126,10 @@
     };
     const loadVideo = async () => {
       try {
-        const candidates = [video.dataset.srcMp4].filter(Boolean);
         let available = location.protocol === 'file:';
         if (!available) {
-          for (const candidate of candidates) {
-            const response = await fetch(candidate, {method: 'HEAD'});
-            if (response.ok && response.headers.get('content-type')?.includes('video')) { available = true; break; }
-          }
+          const response = await fetch(videoSource, {method: 'HEAD'});
+          available = response.ok && response.headers.get('content-type')?.includes('video');
         }
         if (!available || motion?.reduced) return;
         standbyVideo = video.cloneNode(false);
@@ -145,8 +138,7 @@
         standbyVideo.removeAttribute('autoplay');
         standbyVideo.className = 'hero-video-clone';
         video.after(standbyVideo);
-        addSources(video);
-        addSources(standbyVideo);
+        addSource(standbyVideo);
         [video, standbyVideo].forEach(item => item.addEventListener('error', () => item.classList.remove('playing', 'is-active', 'is-fading')));
         await video.play();
         video.classList.add('playing', 'is-active');

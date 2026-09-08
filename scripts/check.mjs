@@ -75,10 +75,12 @@ for (const name of ['index.html', 'index-en.html']) {
   check(hero, `${name}: hero exists`);
   const heroPoster = hero.querySelector('.hero-poster');
   const heroVideo = hero.querySelector('#hero-video');
+  const heroSource = heroVideo?.querySelector('source');
   check(!heroPoster, `${name}: hero safety poster is temporarily disabled`);
   check(!heroVideo?.hasAttribute('poster'), `${name}: video poster attribute is temporarily disabled`);
   check(!heroVideo?.hasAttribute('data-src-webm'), `${name}: no longer references WebM`);
-  check(heroVideo?.dataset.srcMp4 === 'assets/images/hero/hero-video.mp4', `${name}: uses the optimized Safari-compatible MP4`);
+  check(!heroVideo?.hasAttribute('data-src-mp4'), `${name}: MP4 is no longer delayed behind JavaScript`);
+  check(heroSource?.getAttribute('src') === 'assets/images/hero/hero-video.mp4' && heroSource?.getAttribute('type') === 'video/mp4', `${name}: loads the optimized Safari-compatible MP4 natively`);
   check(hero.querySelector('.hero-media') && hero.querySelector('.hero-shade'), `${name}: hero media and contrast layers exist`);
 }
 for (const [name, {doc}] of documents) {
