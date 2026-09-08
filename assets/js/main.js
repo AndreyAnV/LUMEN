@@ -75,7 +75,23 @@
 
   const video = $('#hero-video');
   const videoSource = video?.querySelector('source')?.getAttribute('src');
+  const heroMedia = video?.closest('.hero-media');
   const connection = navigator.connection;
+  const showHeroPoster = () => {
+    if (!heroMedia) return;
+    heroMedia.classList.remove('video-ready');
+    if (heroMedia.querySelector('.hero-poster')) return;
+    const posterPath = window.LUMEN_CONFIG?.media?.heroPoster;
+    if (!posterPath) return;
+    const poster = document.createElement('img');
+    poster.src = posterPath;
+    poster.alt = '';
+    poster.className = 'block hero-poster';
+    poster.width = 1013;
+    poster.height = 1520;
+    poster.decoding = 'async';
+    heroMedia.prepend(poster);
+  };
   if (video && videoSource && !reducedMotion && !connection?.saveData && !['slow-2g', '2g'].includes(connection?.effectiveType)) {
     let activeVideo = video;
     let standbyVideo;
@@ -131,7 +147,11 @@
           const response = await fetch(videoSource, {method: 'HEAD'});
           available = response.ok && response.headers.get('content-type')?.includes('video');
         }
-        if (!available || motion?.reduced) return;
+        if (!available) {
+          showHeroPoster();
+          return;
+        }
+        if (motion?.reduced) return;
         standbyVideo = video.cloneNode(false);
         standbyVideo.removeAttribute('id');
         standbyVideo.removeAttribute('poster');
@@ -139,13 +159,18 @@
         standbyVideo.className = 'hero-video-clone';
         video.after(standbyVideo);
         addSource(standbyVideo);
-        [video, standbyVideo].forEach(item => item.addEventListener('error', () => item.classList.remove('playing', 'is-active', 'is-fading')));
+        video.addEventListener('error', () => {
+          video.classList.remove('playing', 'is-active', 'is-fading');
+          showHeroPoster();
+        });
+        standbyVideo.addEventListener('error', () => standbyVideo.classList.remove('playing', 'is-active', 'is-fading'));
         await video.play();
         video.classList.add('playing', 'is-active');
-        video.closest('.hero-media')?.classList.add('video-ready');
+        heroMedia?.classList.add('video-ready');
         loopFrame = requestAnimationFrame(watchLoop);
       } catch {
         video.classList.remove('playing', 'is-active', 'is-fading');
+        showHeroPoster();
       }
     };
     if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, {timeout: 1200});
@@ -156,7 +181,10 @@
         standbyVideo?.pause();
       } else if (activeVideo.querySelector('source') && !motion?.reduced) {
         settleCrossfade();
-        activeVideo.play().catch(() => activeVideo.classList.remove('playing', 'is-active'));
+        activeVideo.play().catch(() => {
+          activeVideo.classList.remove('playing', 'is-active');
+          showHeroPoster();
+        });
       }
     });
     matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', event => {
@@ -167,8 +195,11 @@
       standbyVideo?.pause();
       video.classList.remove('playing', 'is-active', 'is-fading');
       standbyVideo?.classList.remove('playing', 'is-active', 'is-fading');
-      video.closest('.hero-media')?.classList.remove('video-ready');
+      heroMedia?.classList.remove('video-ready');
+      showHeroPoster();
     });
+  } else if (video && videoSource) {
+    showHeroPoster();
   }
   // If an owner removes an asset, retain the designed background instead of a broken icon.
   $$('img').forEach(img => {

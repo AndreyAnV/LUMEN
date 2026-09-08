@@ -100,8 +100,11 @@ for (const [name, {doc}] of documents) {
   }
 }
 const css = await readFile(resolve(root,'assets/css/styles.css'),'utf8');
+const mainJs = await readFile(resolve(root,'assets/js/main.js'),'utf8');
 check(/\.hero\{[^}]*background:#252d26[^}]*isolation/s.test(css), 'Hero keeps the site-theme dark-green fallback behind its media');
 check(css.includes('.hero-media,.hero-shade{position:absolute;inset:0;z-index:-1;overflow:hidden}'), 'Hero media layers cover the hero');
+check(mainJs.includes('showHeroPoster') && mainJs.includes("heroMedia.prepend(poster)"), 'Blocked hero autoplay loads the safety poster dynamically');
+check(!mainJs.includes('hero-play-control'), 'Blocked hero autoplay adds no playback button');
 for (const [,path] of css.matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)) {
   check((await stat(resolve(root,'assets/css',path))).isFile(), `CSS asset exists: ${path}`);
 }
@@ -122,6 +125,8 @@ async function interactive(name) {
 }
 const home = await interactive('index.html');
 const homeDoc = home.document;
+check(homeDoc.querySelector('.hero-poster')?.getAttribute('src') === 'assets/images/hero/hero-poster.jpg', 'Reduced or blocked hero motion displays the safety poster');
+check(!homeDoc.querySelector('.hero button, .hero-play-control'), 'Hero fallback adds no playback control');
 const quick = homeDoc.querySelector('[data-form]');
 const submit = form => form.dispatchEvent(new form.ownerDocument.defaultView.Event('submit',{bubbles:true,cancelable:true}));
 submit(quick);

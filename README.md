@@ -79,7 +79,7 @@ Paginile HTML pot fi editate și direct. O rulare ulterioară a generatorului re
 
 ## Hero
 
-Secțiunea hero folosește exclusiv `assets/images/hero/hero-video.mp4`, optimizat pentru redare în Safari. `hero-poster.jpg` rămâne disponibil, dar este dezactivat temporar prin `heroPosterEnabled: false`. Două straturi video suprapuse creează tranziția blur/crossfade dintre reluări.
+Secțiunea hero folosește `assets/images/hero/hero-video.mp4`, optimizat pentru redare în Safari. `hero-poster.jpg` nu este încărcat la pornire, pentru a evita orice apariție înaintea videoclipului; JavaScript îl afișează automat și fără controale suplimentare doar dacă redarea video este blocată (inclusiv de modul Low Power pe iPhone) sau indisponibilă. Două straturi video suprapuse creează tranziția blur/crossfade dintre reluări atunci când videoclipul rulează.
 
 ## Comportament demonstrativ
 

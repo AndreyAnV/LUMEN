@@ -15,7 +15,7 @@ const LUMEN_CONFIG = {
   demo: true,
   hours: [['Luni–Vineri', '08:00–20:00'], ['Sâmbătă', '09:00–14:00'], ['Duminică', 'Închis']],
   media: {
-    heroPosterEnabled: false, // Temporary preview: show the theme fallback until video playback begins.
+    heroPosterEnabled: false, // Avoid a startup flash; main.js loads the poster only if video playback is unavailable.
     heroPoster: 'assets/images/hero/hero-poster.jpg',
     heroVideoMp4: 'assets/images/hero/hero-video.mp4',
     clinic: 'assets/images/clinic/reception.webp',
